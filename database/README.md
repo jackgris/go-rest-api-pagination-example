@@ -24,40 +24,40 @@ docker exec -it mysql-nextjs bash
 
 After that the command `mysql -p` and the password we use before, in this case `1234`
 
-Or a better option for that, go strait to the MySQL client with this command:
+Or a better option for that, go straight to the MySQL client with this command:
 
 ```
 docker exec -it mysql-nextjs mysql -p
 ```
 
-## Create user in MySQL and get privileges
+## Create a user in MySQL and get privileges
 
-All this from the MySQL client.
+All from the MySQL client.
 
 -Create user:
 ```
 CREATE USER 'pagination'@'localhost' IDENTIFIED BY '1234';
 ```
 
-- In order to grant all privileges of the database for a newly created user, execute the following command:
+- In order to grant all privileges of the database to a newly created user, execute the following command:
 
 ```
 GRANT ALL PRIVILEGES ON * . * TO 'pagination'@'localhost' WITH GRANT OPTION;
 ```
 
-- Create the same user for allow access from outside:
+- Create the same user to allow access from outside:
 
 ```
 CREATE USER 'pagination'@'%' IDENTIFIED BY '1234';
 ```
 
-- In order to grant all privileges of the database for a newly created user, execute the following command:
+- In order to grant all privileges of the database to a newly created user, execute the following command:
 
 ```
 GRANT ALL PRIVILEGES ON *.* TO 'pagination'@'%' WITH GRANT OPTION;
 ```
 
-Of course if you want manage the privileges in a better way, you can follow some tutorial like this:
+Of course, if you want to manage the privileges in a better way, you can follow some tutorials like this:
 [How to Create MySQL User and Grant Privileges: A Beginner’s Guide](https://www.hostinger.com/tutorials/mysql/how-create-mysql-user-and-grant-permissions-command-line)
 
 - For changes to take effect immediately flush these privileges by typing in the command:
@@ -76,11 +76,11 @@ With this command will create the database:
 CREATE DATABASE todo_pagination;
 ```
 
-## Problems Solved
+## Solve problems
 
 ### failed to connect database
 
-Maybe the IP is not right, because you are running the database in Docker and you are using the IP `127.0.0.1`, you need to figure out the IP. For that you can use this command:
+Maybe the IP is not right, because you are running the database in Docker and you are using the IP `127.0.0.1`, you need to figure out the IP. For that, you can use this command:
 
 ```
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql-nextjs
@@ -89,4 +89,4 @@ That could bring you this IP `172.17.0.2` so, you need to use that IP address.
 
 ## Note:
 
-Many of this, will be done automatically, but at beginning, for testing purpose its nice have everything running.
+Many of these steps will be done automatically, but at first, for the purpose of testing, it's nice to have everything running at least manually.
