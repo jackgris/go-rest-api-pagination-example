@@ -42,7 +42,19 @@ CREATE USER 'pagination'@'localhost' IDENTIFIED BY '1234';
 - In order to grant all privileges of the database for a newly created user, execute the following command:
 
 ```
-GRANT ALL PRIVILEGES ON * . * TO 'pagination'@'localhost';
+GRANT ALL PRIVILEGES ON * . * TO 'pagination'@'localhost' WITH GRANT OPTION;
+```
+
+- Create the same user for allow access from outside:
+
+```
+CREATE USER 'pagination'@'%' IDENTIFIED BY '1234';
+```
+
+- In order to grant all privileges of the database for a newly created user, execute the following command:
+
+```
+GRANT ALL PRIVILEGES ON *.* TO 'pagination'@'%' WITH GRANT OPTION;
 ```
 
 Of course if you want manage the privileges in a better way, you can follow some tutorial like this:
@@ -64,6 +76,16 @@ With this command will create the database:
 CREATE DATABASE todo_pagination;
 ```
 
+## Problems Solved
+
+### failed to connect database
+
+Maybe the IP is not right, because you are running the database in Docker and you are using the IP `127.0.0.1`, you need to figure out the IP. For that you can use this command:
+
+```
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql-nextjs
+```
+That could bring you this IP `172.17.0.2` so, you need to use that IP address.
 
 ## Note:
 
