@@ -22,7 +22,7 @@ type Storer interface {
 	Update(ctx context.Context, todo Todo) error
 	Delete(ctx context.Context, todo Todo) error
 	Query(ctx context.Context, filter string, orderBy string, pageNumber int, rowsPerPage int) ([]Todo, error)
-	Count(ctx context.Context, filter string) (int, error)
+	Count(ctx context.Context, filter string) (int64, error)
 	QueryByID(ctx context.Context, todoID uuid.UUID) (Todo, error)
 }
 
@@ -101,7 +101,7 @@ func (c *Core) Query(ctx context.Context, filter string, orderBy string, pageNum
 }
 
 // Count returns the total number of Todos in the store.
-func (c *Core) Count(ctx context.Context, filter string) (int, error) {
+func (c *Core) Count(ctx context.Context, filter string) (int64, error) {
 	return c.storer.Count(ctx, filter)
 }
 

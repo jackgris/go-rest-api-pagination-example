@@ -4,12 +4,12 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
+	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
 )
 
 type Config struct {
-	Log *log.Logger
-	Db  *gorm.DB
+	Log  *log.Logger
+	Core *todo.Core
 }
 
 func Routes(app *fiber.App, cfg Config) {
