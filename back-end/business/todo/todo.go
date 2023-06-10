@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackgris/go-rest-api-pagination-example/business/logger"
 )
 
 // Set of error variables for CRUD operations.
@@ -28,12 +28,12 @@ type Storer interface {
 
 // Core manages the set of APIs for todo access.
 type Core struct {
-	log    *log.Logger
+	log    *logger.Logger
 	storer Storer
 }
 
 // NewCore constructs a core for todo api access.
-func NewCore(log *log.Logger, storer Storer) *Core {
+func NewCore(log *logger.Logger, storer Storer) *Core {
 	core := Core{
 		log:    log,
 		storer: storer,

@@ -1,14 +1,13 @@
 package v1
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackgris/go-rest-api-pagination-example/business/logger"
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
 )
 
 type Config struct {
-	Log  *log.Logger
+	Log  *logger.Logger
 	Core *todo.Core
 }
 

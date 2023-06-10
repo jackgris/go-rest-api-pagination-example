@@ -3,9 +3,9 @@ package tododb
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/google/uuid"
+	"github.com/jackgris/go-rest-api-pagination-example/business/logger"
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
 	"gorm.io/gorm"
 )
@@ -14,12 +14,12 @@ var ErrNotID = errors.New("todo need ID")
 
 // Store manages the set of APIs for todo database access.
 type Store struct {
-	log *log.Logger
+	log *logger.Logger
 	db  *gorm.DB
 }
 
 // NewStore constructs the api for data access.
-func NewStore(log *log.Logger, db *gorm.DB) *Store {
+func NewStore(log *logger.Logger, db *gorm.DB) *Store {
 	return &Store{
 		log: log,
 		db:  db,
