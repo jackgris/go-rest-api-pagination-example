@@ -1,9 +1,8 @@
 package v1
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
 )
 
 func GetTodos(cfg Config) fiber.Handler {
@@ -11,11 +10,13 @@ func GetTodos(cfg Config) fiber.Handler {
 	fn := func(c *fiber.Ctx) error {
 		tds, err := cfg.Core.Query(c.Context(), "", "", 0, 0)
 		if err != nil {
-			return err
+			return c.JSON(Response{
+				Success: false,
+				Message: "Can't proccess Todos",
+			})
 		}
 
-		message := fmt.Sprintf("All todos %s", tds)
-		return c.SendString(message)
+		return c.JSON(tds)
 	}
 
 	return fn
@@ -24,7 +25,39 @@ func GetTodos(cfg Config) fiber.Handler {
 func CreateTodo(cfg Config) fiber.Handler {
 
 	fn := func(c *fiber.Ctx) error {
-		return c.SendString("Not implemented CreateTodo")
+
+		td, err := postToTodo(c.Body())
+		if err != nil {
+			return c.JSON(Response{
+				Success: false,
+				Message: "Can't proccess Todo",
+			})
+		}
+
+		if isNotValidTodo(td) {
+			return c.JSON(Response{
+				Success: false,
+				Message: "Todo should contain name and description",
+			})
+		}
+
+		newTd := todo.NewTodo{
+			Name:        td.Name,
+			Description: td.Description,
+		}
+
+		dbTd, err := cfg.Core.Create(c.Context(), newTd)
+		if err != nil {
+			return c.JSON(Response{
+				Success: false,
+				Message: "Can't create Todo in database",
+			})
+		}
+
+		return c.JSON(Response{
+			Success: true,
+			Data:    todoToTodoJson(dbTd),
+		})
 	}
 
 	return fn

@@ -8,7 +8,7 @@ import (
 )
 
 // Todo represents an individual todo in the database.
-type dbTodo struct {
+type DbTodo struct {
 	ID          uuid.UUID `gorm:"primaryKey"`
 	Name        string
 	Description string
@@ -18,8 +18,8 @@ type dbTodo struct {
 
 // =============================================================================
 
-func toDBTodo(td todo.Todo) dbTodo {
-	todoDB := dbTodo{
+func toDBTodo(td todo.Todo) DbTodo {
+	todoDB := DbTodo{
 		ID:          td.ID,
 		Name:        td.Name,
 		Description: td.Description,
@@ -30,7 +30,7 @@ func toDBTodo(td todo.Todo) dbTodo {
 	return todoDB
 }
 
-func toCoreTodo(dbTd dbTodo) todo.Todo {
+func toCoreTodo(dbTd DbTodo) todo.Todo {
 	td := todo.Todo{
 		ID:          dbTd.ID,
 		Name:        dbTd.Name,
@@ -42,7 +42,7 @@ func toCoreTodo(dbTd dbTodo) todo.Todo {
 	return td
 }
 
-func toTodoSlice(dbTodos []dbTodo) []todo.Todo {
+func toTodoSlice(dbTodos []DbTodo) []todo.Todo {
 	todos := make([]todo.Todo, len(dbTodos))
 	for i, dbTd := range dbTodos {
 		todos[i] = toCoreTodo(dbTd)

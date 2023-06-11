@@ -37,7 +37,7 @@ func NewDb(log *logger.Logger) *todo.Core {
 	log.Println("Database it's fine")
 
 	log.Println("Connecting to database")
-	dsn := "pagination:1234@tcp(172.17.0.2:3306)/" + dbname
+	dsn := "pagination:1234@tcp(172.17.0.2:3306)/" + dbname + "?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect database: %s", err)
@@ -45,7 +45,7 @@ func NewDb(log *logger.Logger) *todo.Core {
 	log.Println("Connection successfully")
 
 	log.Println("Running Migrations")
-	err = db.AutoMigrate(todo.Todo{})
+	err = db.AutoMigrate(&tododb.DbTodo{})
 	if err != nil {
 		log.Fatalf("Failed to run migration database: %s", err)
 	}
