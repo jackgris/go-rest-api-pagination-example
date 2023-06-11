@@ -16,6 +16,10 @@ type DbTodo struct {
 	DateUpdated time.Time
 }
 
+func (DbTodo) TableName() string {
+	return "todo"
+}
+
 // =============================================================================
 
 func toDBTodo(td todo.Todo) DbTodo {
