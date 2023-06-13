@@ -24,12 +24,12 @@ type Response struct {
 	Data    Todo   `json:"data"`
 }
 
-func postToTodo(data []byte) (todo.Todo, error) {
+func postToTodo(data []byte) (Todo, error) {
 
-	td := todo.Todo{}
+	td := Todo{}
 	err := json.Unmarshal(data, &td)
 	if err != nil {
-		return todo.Todo{}, err
+		return Todo{}, err
 	}
 
 	return td, nil
@@ -45,6 +45,16 @@ func todoToTodoJson(td todo.Todo) Todo {
 	}
 }
 
-func isNotValidTodo(td todo.Todo) bool {
+func todoJsonToTodo(td Todo) todo.Todo {
+	return todo.Todo{
+		ID:          td.ID,
+		Name:        td.Name,
+		Description: td.Description,
+		DateCreated: td.DateCreated,
+		DateUpdated: td.DateUpdated,
+	}
+}
+
+func isNotValidTodo(td Todo) bool {
 	return (td.Name == "" || td.Description == "")
 }

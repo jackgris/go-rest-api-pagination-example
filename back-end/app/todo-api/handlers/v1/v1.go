@@ -17,7 +17,7 @@ func Routes(app *fiber.App, cfg Config) {
 	app.Route(version, func(api fiber.Router) {
 		api.Get("/todos", GetTodos(cfg))
 		api.Post("/todos", CreateTodo(cfg))
-		api.Put("/todos/:id", UpdateTodo(cfg))
+		api.Put("/todos", UpdateTodo(cfg))
 		api.Get("/todos/:id", GetTodoById(cfg))
 		api.Delete("/todos/:id", DeleteTodo(cfg))
 	}, version+".")

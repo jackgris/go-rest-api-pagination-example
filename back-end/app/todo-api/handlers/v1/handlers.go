@@ -75,7 +75,41 @@ func CreateTodo(cfg Config) fiber.Handler {
 func UpdateTodo(cfg Config) fiber.Handler {
 
 	fn := func(c *fiber.Ctx) error {
-		return c.SendString("Not implemented UpdateTodo")
+		tdJson, err := postToTodo(c.Body())
+		if err != nil {
+			c.Status(fiber.StatusBadRequest)
+			return c.JSON(Response{
+				Success: false,
+				Message: "Can't proccess Todo",
+			})
+		}
+
+		if isNotValidTodo(tdJson) || tdJson.ID == uuid.Nil {
+			c.Status(fiber.StatusBadRequest)
+			return c.JSON(Response{
+				Success: false,
+				Message: "It's not a valid Todo",
+			})
+		}
+
+		uTd := todo.UpdateTodo{
+			Name:        &tdJson.Name,
+			Description: &tdJson.Description,
+		}
+		td := todoJsonToTodo(tdJson)
+		td, err = cfg.Core.Update(c.Context(), td, uTd)
+		if err != nil {
+			c.Status(fiber.StatusInternalServerError)
+			return c.JSON(Response{
+				Success: false,
+				Message: "Can't update Todo",
+			})
+		}
+		c.Status(fiber.StatusOK)
+		return c.JSON(Response{
+			Success: true,
+			Data:    todoToTodoJson(td),
+		})
 	}
 
 	return fn
