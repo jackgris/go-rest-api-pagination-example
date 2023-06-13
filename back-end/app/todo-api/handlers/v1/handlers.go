@@ -101,15 +101,15 @@ func GetTodoById(cfg Config) fiber.Handler {
 			})
 		}
 		td, err := cfg.Core.QueryByID(c.Context(), uuId)
-		if err != nil {
+		if err != nil || td.ID == uuid.Nil {
 			c.Status(fiber.StatusNotFound)
 			return c.JSON(Response{
 				Success: false,
 				Message: "ID not found",
 			})
 		}
-		tdJson := todoToTodoJson(td)
 
+		tdJson := todoToTodoJson(td)
 		c.Status(fiber.StatusOK)
 		return c.JSON(Response{
 			Success: true,
@@ -124,7 +124,37 @@ func GetTodoById(cfg Config) fiber.Handler {
 func DeleteTodo(cfg Config) fiber.Handler {
 
 	fn := func(c *fiber.Ctx) error {
-		return c.SendString("Not implemented DeleteTodo")
+		id := c.Params("id", "")
+		if id == "" {
+			c.Status(fiber.StatusBadRequest)
+			return c.JSON(Response{
+				Success: false,
+				Message: "You need to pass an ID params",
+			})
+		}
+		uuId, err := uuid.Parse(id)
+		if err != nil {
+			c.Status(fiber.StatusBadRequest)
+			return c.JSON(Response{
+				Success: false,
+				Message: "Invalid ID params",
+			})
+		}
+		td := todo.Todo{ID: uuId}
+		err = cfg.Core.Delete(c.Context(), td)
+		if err != nil {
+			c.Status(fiber.StatusNotFound)
+			return c.JSON(Response{
+				Success: false,
+				Message: "ID not found",
+			})
+		}
+
+		c.Status(fiber.StatusOK)
+		return c.JSON(Response{
+			Success: true,
+			Message: "Todo deleted",
+		})
 	}
 
 	return fn
