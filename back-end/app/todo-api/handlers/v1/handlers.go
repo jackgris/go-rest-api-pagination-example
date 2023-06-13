@@ -15,8 +15,12 @@ func GetTodos(cfg Config) fiber.Handler {
 				Message: "Can't proccess Todos",
 			})
 		}
+		tdsJson := []Todo{}
+		for _, t := range tds {
+			tdsJson = append(tdsJson, todoToTodoJson(t))
+		}
 
-		return c.JSON(tds)
+		return c.JSON(tdsJson)
 	}
 
 	return fn
