@@ -55,9 +55,23 @@ func (s *Store) Delete(ctx context.Context, td todo.Todo) error {
 func (s *Store) Query(ctx context.Context, filter string, orderBy string, pageNumber int, rowsPerPage int) ([]todo.Todo, error) {
 
 	dbTd := []DbTodo{}
-	// Get all records
-	result := s.db.Find(&dbTd)
+	// Set minimun number of page
+	if pageNumber <= 0 {
+		pageNumber = 1
+	}
 
+	// Set minimun and maximum number of row per page
+	switch {
+	case rowsPerPage > 100:
+		rowsPerPage = 100
+	case rowsPerPage <= 0:
+		rowsPerPage = 10
+	}
+
+	// Start showing result from this number of Todos
+	offset := (pageNumber - 1) * rowsPerPage
+
+	result := s.db.Offset(offset).Limit(rowsPerPage).Find(&dbTd)
 	if result.Error != nil {
 		return []todo.Todo{}, result.Error
 	}

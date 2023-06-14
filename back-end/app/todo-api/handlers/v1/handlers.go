@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
@@ -9,7 +11,14 @@ import (
 func GetTodos(cfg Config) fiber.Handler {
 
 	fn := func(c *fiber.Ctx) error {
-		tds, err := cfg.Core.Query(c.Context(), "", "", 0, 0)
+		// Get the page number, if the user don't pass any number the default will be the first page
+		page := c.Query("page", "1")
+		pageNumber, err := strconv.Atoi(page)
+		if err != nil {
+			pageNumber = 1
+		}
+		// We search all Todos related to the number page and with a maximum per page of 10 results
+		tds, err := cfg.Core.Query(c.Context(), "", "", pageNumber, 10)
 		if err != nil {
 			c.Status(fiber.StatusInternalServerError)
 			return c.JSON(Response{
