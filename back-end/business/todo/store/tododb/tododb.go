@@ -11,6 +11,7 @@ import (
 )
 
 var ErrNotID = errors.New("todo need ID")
+var ErrNotExist = errors.New("todo ID don't found")
 
 // Store manages the set of APIs for todo database access.
 type Store struct {
@@ -40,7 +41,13 @@ func (s *Store) Update(ctx context.Context, td todo.Todo) error {
 		return ErrNotID
 	}
 	dbTd := toDBTodo(td)
-	result := s.db.Save(&dbTd)
+	result := s.db.First(&dbTd)
+	// Check error ErrRecordNotFound
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return ErrNotExist
+	}
+
+	result = s.db.Save(&dbTd)
 
 	return result.Error
 }

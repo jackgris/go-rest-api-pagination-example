@@ -2,7 +2,6 @@ package v1_test
 
 import (
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
@@ -25,13 +24,22 @@ func (m MockStore) Create(ctx context.Context, todo todo.Todo) error {
 	return nil
 }
 
-func (m MockStore) Update(ctx context.Context, todo todo.Todo) error {
-	m.data[todo.ID.String()] = todo
+func (m MockStore) Update(ctx context.Context, td todo.Todo) error {
+	_, ok := m.data[td.ID.String()]
+	if !ok {
+		return todo.ErrNotFound
+	}
+	m.data[td.ID.String()] = td
 	return nil
 }
 
-func (m MockStore) Delete(ctx context.Context, todo todo.Todo) error {
-	delete(m.data, todo.ID.String())
+func (m MockStore) Delete(ctx context.Context, td todo.Todo) error {
+	_, ok := m.data[td.ID.String()]
+	if !ok {
+		return todo.ErrNotFound
+	}
+
+	delete(m.data, td.ID.String())
 	return nil
 }
 
@@ -67,7 +75,7 @@ func (m MockStore) Count(ctx context.Context, filter string) (int64, error) {
 func (m MockStore) QueryByID(ctx context.Context, todoID uuid.UUID) (todo.Todo, error) {
 	td, ok := m.data[todoID.String()]
 	if !ok {
-		return td, errors.New("Not found")
+		return td, todo.ErrNotFound
 	}
 	return td, nil
 }
