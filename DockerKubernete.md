@@ -58,3 +58,16 @@ When trying to use a local container image maybe you receive this error, for fix
 ```
 
 So, run that command: `eval $(minikube -p minikube docker-env)` and build your container again.
+
+
+Run bash terminal in our MySql database server:
+
+```
+kubectl --namespace todos-system exec -it database-759bd947f9-c5rl5 -- bash
+```
+
+Port forwarding for our database server:
+
+```
+kubectl port-forward service/database 3306:3306 --namespace=todos-system
+```

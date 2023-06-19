@@ -1,0 +1,14 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraPortMappings:
+  # Our API service
+  - containerPort: 3000
+    hostPort: 3000
+  # MySQL
+  - containerPort: 3306
+    hostPort: 3306
+  # Front End
+  # - containerPort: 8080
+  #   hostPort: 8080
