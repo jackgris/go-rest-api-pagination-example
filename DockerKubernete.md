@@ -60,14 +60,21 @@ When trying to use a local container image maybe you receive this error, for fix
 So, run that command: `eval $(minikube -p minikube docker-env)` and build your container again.
 
 
+### Accesing our database
+
 Run bash terminal in our MySql database server:
 
 ```
-kubectl --namespace todos-system exec -it database-759bd947f9-c5rl5 -- bash
+kubectl exec -it -n db-ns mysql-65577f9f69-cqpwk  -- bash
 ```
+
+Where `mysql-65577f9f69-cqpwk` is the name of the Pod that run our database.
+
+
+### Accesing our API todo service
 
 Port forwarding for our database server:
 
 ```
-kubectl port-forward service/database 3306:3306 --namespace=todos-system
+kubectl port-forward -n todos-ns svc/todosapi 3000 --namespace=todos-ns
 ```
