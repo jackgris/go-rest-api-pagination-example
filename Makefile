@@ -1,12 +1,12 @@
 # ==============================================================================
 # Define dependencies
 
-KIND            := kindest/node:v1.26.3
+KIND            := kindest/node:v1.27.3
 KIND_CLUSTER    := goscrapy-starter-cluster
 NAMESPACE       := todos-system
 NAMESPACE_DB		:= db-ns
 NAMESPACE_API		:= todos-ns
-APP             := todos-api
+APP             := todosapi
 VERSION         := 0.0.1
 BASE_IMAGE_NAME := pagination
 SERVICE_NAME    := todos-api
@@ -28,11 +28,8 @@ dev-up-local:
 
 	kubectl apply -f namespace.yaml
 
-
-
 dev-down:
 	kind delete cluster --name $(KIND_CLUSTER)
-
 
 # ==============================================================================
 # Building containers
@@ -75,17 +72,8 @@ dev-load-api:
 
 dev-load: dev-load-database dev-load-api
 
-dev-database-client:
-	kubectl run -it --rm --image=mysql:8.0.33 --restart=Never mysql-client -- mysql -h mysql -ppassword
-
 dev-port-forward:
 	kubectl port-forward -n todos-ns svc/todosapi 3000 --namespace=todos-ns
-
-# dev-apply:
-# 	kubectl rollout status --namespace=$(NAMESPACE) --watch --timeout=120s sts/database
-
-# dev-restart:
-# 	kubectl rollout restart deployment $(APP) --namespace=$(NAMESPACE)
 
 dev-status:
 	kubectl get nodes -o wide --namespace=$(NAMESPACE_DB)
@@ -103,8 +91,10 @@ dev-describe:
 dev-describe-deployment:
 	kubectl describe deployment --namespace=$(NAMESPACE_API) $(APP)
 
-dev-describe-sales:
+dev-describe-todos:
 	kubectl describe pod --namespace=$(NAMESPACE_API) -l app=$(APP)
 
-# ------------------------------------------------------------------------------
+dev-pods:
+	kubectl get pods --all-namespaces
 
+# ------------------------------------------------------------------------------
