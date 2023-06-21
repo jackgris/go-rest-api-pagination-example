@@ -4,7 +4,9 @@
 KIND            := kindest/node:v1.26.3
 KIND_CLUSTER    := goscrapy-starter-cluster
 NAMESPACE       := todos-system
-APP             := todos
+NAMESPACE_DB		:= db-ns
+NAMESPACE_API		:= todos-ns
+APP             := todos-api
 VERSION         := 0.0.1
 BASE_IMAGE_NAME := pagination
 SERVICE_NAME    := todos-api
@@ -56,36 +58,53 @@ database-mysql:
 
 # ------------------------------------------------------------------------------
 # Load and manage images
+dev-load-database:
+	kubectl create -f k8s/database/mysql-ns.yaml
+	kubectl create -f k8s/database/configmap-mysql.yaml
+	kubectl create -f k8s/database/secret-mysql.yaml
+	kubectl create -f k8s/database/mysql-volume-pvc.yaml
+	kubectl create -f k8s/database/deployment-mysql.yaml
+	kubectl create -f k8s/database/service-mysql.yaml
 
-dev-load:
-	kubectl apply -f database/mysql-pv.yaml
-	kubectl apply -f database/mysql-deployment.yaml
+dev-load-api:
+	kubectl create -f k8s/api/todos-ns.yaml
+	kubectl create -f k8s/api/secret-todos.yaml
+	kubectl create -f k8s/api/configmap-todos.yaml
+	kubectl create -f k8s/api/deployment-todos.yaml
+	kubectl create -f k8s/api/service-todos.yaml
 
-# We need to run our $(SERVICE_IMAGE) in --name $(KIND_CLUSTER)
+dev-load: dev-load-database dev-load-api
 
-dev-datatbase-client:
+dev-database-client:
 	kubectl run -it --rm --image=mysql:8.0.33 --restart=Never mysql-client -- mysql -h mysql -ppassword
 
-dev-apply:
-	kubectl rollout status --namespace=$(NAMESPACE) --watch --timeout=120s sts/database
+dev-port-forward:
+	kubectl port-forward -n todos-ns svc/todosapi 3000 --namespace=todos-ns
 
-dev-restart:
-	kubectl rollout restart deployment $(APP) --namespace=$(NAMESPACE)
+# dev-apply:
+# 	kubectl rollout status --namespace=$(NAMESPACE) --watch --timeout=120s sts/database
+
+# dev-restart:
+# 	kubectl rollout restart deployment $(APP) --namespace=$(NAMESPACE)
 
 dev-status:
-	kubectl get nodes -o wide
-	kubectl get svc -o wide
+	kubectl get nodes -o wide --namespace=$(NAMESPACE_DB)
+	kubectl get nodes -o wide --namespace=$(NAMESPACE_API)
+	kubectl get svc -o wide --namespace=$(NAMESPACE_DB)
+	kubectl get svc -o wide --namespace=$(NAMESPACE_API)
 	kubectl get pods -o wide --watch --all-namespaces
 
 dev-describe:
-	kubectl describe nodes
-	kubectl describe svc
+	kubectl describe nodes --namespace=$(NAMESPACE_DB)
+	kubectl describe nodes --namespace=$(NAMESPACE_API)
+	kubectl describe svc --namespace=$(NAMESPACE_DB)
+	kubectl describe svc --namespace=$(NAMESPACE_API)
 
 dev-describe-deployment:
-	kubectl describe deployment --namespace=$(NAMESPACE) $(APP)
+	kubectl describe deployment --namespace=$(NAMESPACE_API) $(APP)
 
 dev-describe-sales:
-	kubectl describe pod --namespace=$(NAMESPACE) -l app=$(APP)
+	kubectl describe pod --namespace=$(NAMESPACE_API) -l app=$(APP)
 
 # ------------------------------------------------------------------------------
 
