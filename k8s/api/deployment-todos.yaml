@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: todosapi
+  name: todosapi
+  namespace: todos-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todosapi
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: todosapi
+    spec:
+      containers:
+      - image: jackgris/pagination-todos-api:0.0.1
+        name: todosapik8s
+        resources: {}
+        env:
+          - name: CONFIG_DBPASS
+            valueFrom:
+              secretKeyRef:
+                key: rootpassword
+                name: mysql-password
+          - name: CONFIG_DBNAME
+            valueFrom:
+              configMapKeyRef:
+                key: dbname
+                name: todos-cm
+          - name: CONFIG_DBUSER
+            valueFrom:
+              configMapKeyRef:
+                key: dbuser
+                name: todos-cm
+          - name: CONFIG_SERVER_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: serverport
+                name: todos-cm
+          - name: CONFIG_DBHOST
+            valueFrom:
+              configMapKeyRef:
+                key: dbhost
+                name: todos-cm
+status: {}

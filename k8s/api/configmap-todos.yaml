@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  dbname: todo_pagination
+  dbuser: root
+  serverport: "3000"
+  dbhost: mysql.db-ns.svc.cluster.local:3306
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: todos-cm
+  namespace: todos-ns
