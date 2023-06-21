@@ -6,6 +6,6 @@ ENV MYSQL_PASSWORD=1234
 ENV MYSQL_ROOT_PASSWORD=1234
 ENV MYSQL_PORT=3306
 
-# ADD todo_backup.sql /docker-entrypoint-initdb.d
+ADD ./database/data.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 3306
