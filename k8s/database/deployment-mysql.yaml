@@ -15,7 +15,7 @@ spec:
         app: mysql
     spec:
       containers:
-        - image: mysql:8.0.33
+        - image: jackgris/pagination-todos-mysql:0.0.1
           name: mysql
           env:
             # Use secret in real usage
@@ -30,7 +30,12 @@ spec:
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
+            - name: script-mysql-cm
+              mountPath: /docker-entrypoint-initdb.d
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-pv-claim
+        - name: script-mysql-cm
+          configMap:
+            name: script-mysql-cm

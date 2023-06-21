@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  script.sql: |
+    CREATE DATABASE todo_pagination;
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: script-mysql-cm
+  namespace: db-ns
