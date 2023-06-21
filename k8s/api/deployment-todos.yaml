@@ -48,4 +48,8 @@ spec:
               configMapKeyRef:
                 key: dbhost
                 name: todos-cm
+      initContainers:
+      - name: init-mydb
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup mysql.db-ns.svc.cluster.local; do echo waiting for mydb; sleep 2; done"]
 status: {}
