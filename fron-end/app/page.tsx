@@ -1,10 +1,12 @@
-import {TodoList} from "./todolist";
+import App from './App'
+import 'todomvc-app-css/index.css'
 
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-          <TodoList/>
+    <main className='todoapp'>
+          <App/>
     </main>
   )
 }
+ 
