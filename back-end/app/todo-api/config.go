@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	v1 "github.com/jackgris/go-rest-api-pagination-example/app/todo-api/handlers/v1"
 	"github.com/jackgris/go-rest-api-pagination-example/business/logger"
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
@@ -79,6 +80,9 @@ func NewApp(core *todo.Core, logger *logger.Logger) *fiber.App {
 		Core: core,
 	}
 	app := fiber.New()
+	// Initialize default config
+	app.Use(cors.New())
+
 	v1.Routes(app, cfg)
 
 	return app
