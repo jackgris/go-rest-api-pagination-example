@@ -2,7 +2,7 @@
 import { useEffect, useReducer } from 'react'
 import { TODO_FILTERS } from '../consts'
 import { fetchTodos, updateTodos } from '../services/todos'
-import { type TodoList, type FilterValue } from '../types'
+import { type TodoList, type FilterValue, type Todo as Td, RespTodo } from '../types'
 
 const initialState = {
   sync: false,
@@ -189,12 +189,24 @@ export const useTodos = (): {
   const activeCount = todos.length - completedCount
 
   useEffect(() => {
-    fetchTodos()
-      .then(todos => {
+      const tds = fetchTodos()
+      tds.then(resp => {
+        let todos : TodoList = []
+        // This transformation is only because I don't wanna change my API :D 
+        resp.forEach((t: RespTodo) => {
+          const td: Td = {
+          id: t.id,
+          description: t.description,
+          title: t.name,
+          completed: false
+          }
+          todos.push(td)
+        })
         dispatch({ type: 'INIT_TODOS', payload: { todos } })
-      })
-      .catch(err => { console.error(err) })
+      }
+      )
   }, [])
+
 
   useEffect(() => {
     if (sync) {
