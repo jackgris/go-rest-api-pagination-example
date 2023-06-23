@@ -41,15 +41,16 @@ func (s *Store) Update(ctx context.Context, td todo.Todo) error {
 		return ErrNotID
 	}
 	dbTd := toDBTodo(td)
-	result := s.db.First(&dbTd)
+
+	check := DbTodo{ID: td.ID}
+	result := s.db.First(&check)
 	// Check error ErrRecordNotFound
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return ErrNotExist
 	}
 
-	result = s.db.Save(&dbTd)
-
-	return result.Error
+	err := s.db.Save(&dbTd)
+	return err.Error
 }
 
 func (s *Store) Delete(ctx context.Context, td todo.Todo) error {

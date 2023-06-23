@@ -100,11 +100,14 @@ func UpdateTodo(cfg Config) fiber.Handler {
 				Message: "It's not a valid Todo",
 			})
 		}
-
-		uTd := todo.UpdateTodo{
-			Name:        &tdJson.Name,
-			Description: &tdJson.Description,
+		uTd := todo.UpdateTodo{}
+		if tdJson.Name != "" {
+			uTd.Name = &tdJson.Name
 		}
+		if tdJson.Description != "" {
+			uTd.Description = &tdJson.Description
+		}
+
 		td := todoJsonToTodo(tdJson)
 		td, err = cfg.Core.Update(c.Context(), td, uTd)
 		if err != nil {
