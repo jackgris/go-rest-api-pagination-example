@@ -50,8 +50,9 @@ func (c *Core) Create(ctx context.Context, todo NewTodo) (Todo, error) {
 
 	td := Todo{
 		ID:          uuid.New(),
-		Name:        todo.Name,
+		Title:       todo.Title,
 		Description: todo.Description,
+		Completed:   false,
 		DateCreated: now,
 		DateUpdated: now,
 	}
@@ -66,11 +67,14 @@ func (c *Core) Create(ctx context.Context, todo NewTodo) (Todo, error) {
 // Update modifies data about a Todo. It will error if the specified ID is
 // invalid or does not reference an existing Product.
 func (c *Core) Update(ctx context.Context, td Todo, up UpdateTodo) (Todo, error) {
-	if up.Name != nil {
-		td.Name = *up.Name
+	if up.Title != nil {
+		td.Title = *up.Title
 	}
 	if up.Description != nil {
 		td.Description = *up.Description
+	}
+	if up.Completed != nil {
+		td.Completed = *up.Completed
 	}
 	td.DateUpdated = time.Now()
 

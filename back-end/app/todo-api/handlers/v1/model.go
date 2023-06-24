@@ -2,7 +2,6 @@ package v1
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
@@ -11,10 +10,9 @@ import (
 // Todo represents an individual todo.
 type Todo struct {
 	ID          uuid.UUID `json:"id"`
-	Name        string    `json:"name"`
+	Title       string    `json:"title"`
 	Description string    `json:"description"`
-	DateCreated time.Time `json:"date_created"`
-	DateUpdated time.Time `json:"date_updated"`
+	Completed   bool      `json:"completed"`
 }
 
 // Response represents the server information send
@@ -38,23 +36,21 @@ func postToTodo(data []byte) (Todo, error) {
 func todoToTodoJson(td todo.Todo) Todo {
 	return Todo{
 		ID:          td.ID,
-		Name:        td.Name,
+		Title:       td.Title,
 		Description: td.Description,
-		DateCreated: td.DateCreated,
-		DateUpdated: td.DateUpdated,
+		Completed:   td.Completed,
 	}
 }
 
 func todoJsonToTodo(td Todo) todo.Todo {
 	return todo.Todo{
 		ID:          td.ID,
-		Name:        td.Name,
+		Title:       td.Title,
+		Completed:   td.Completed,
 		Description: td.Description,
-		DateCreated: td.DateCreated,
-		DateUpdated: td.DateUpdated,
 	}
 }
 
 func isNotValidTodo(td Todo) bool {
-	return (td.Name == "" || td.Description == "")
+	return (td.Title == "" || td.Description == "")
 }

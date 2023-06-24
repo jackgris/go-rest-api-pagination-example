@@ -10,8 +10,9 @@ import (
 // Todo represents an individual todo in the database.
 type DbTodo struct {
 	ID          uuid.UUID `gorm:"primaryKey"`
-	Name        string
+	Title       string
 	Description string
+	Completed   bool
 	DateCreated time.Time
 	DateUpdated time.Time
 }
@@ -25,8 +26,9 @@ func (DbTodo) TableName() string {
 func toDBTodo(td todo.Todo) DbTodo {
 	todoDB := DbTodo{
 		ID:          td.ID,
-		Name:        td.Name,
+		Title:       td.Title,
 		Description: td.Description,
+		Completed:   td.Completed,
 		DateCreated: td.DateCreated.UTC(),
 		DateUpdated: td.DateUpdated.UTC(),
 	}
@@ -37,8 +39,9 @@ func toDBTodo(td todo.Todo) DbTodo {
 func toCoreTodo(dbTd DbTodo) todo.Todo {
 	td := todo.Todo{
 		ID:          dbTd.ID,
-		Name:        dbTd.Name,
+		Title:       dbTd.Title,
 		Description: dbTd.Description,
+		Completed:   dbTd.Completed,
 		DateCreated: dbTd.DateCreated.In(time.Local),
 		DateUpdated: dbTd.DateUpdated.In(time.Local),
 	}

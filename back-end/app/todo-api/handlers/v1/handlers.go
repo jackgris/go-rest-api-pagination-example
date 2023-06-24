@@ -59,7 +59,7 @@ func CreateTodo(cfg Config) fiber.Handler {
 		}
 
 		newTd := todo.NewTodo{
-			Name:        td.Name,
+			Title:       td.Title,
 			Description: td.Description,
 		}
 
@@ -101,12 +101,14 @@ func UpdateTodo(cfg Config) fiber.Handler {
 			})
 		}
 		uTd := todo.UpdateTodo{}
-		if tdJson.Name != "" {
-			uTd.Name = &tdJson.Name
+		if tdJson.Title != "" {
+			uTd.Title = &tdJson.Title
 		}
 		if tdJson.Description != "" {
 			uTd.Description = &tdJson.Description
 		}
+
+		uTd.Completed = &tdJson.Completed
 
 		td := todoJsonToTodo(tdJson)
 		td, err = cfg.Core.Update(c.Context(), td, uTd)

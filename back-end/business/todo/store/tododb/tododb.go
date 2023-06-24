@@ -48,7 +48,7 @@ func (s *Store) Update(ctx context.Context, td todo.Todo) error {
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return ErrNotExist
 	}
-
+	dbTd.DateCreated = check.DateCreated
 	err := s.db.Save(&dbTd)
 	return err.Error
 }
