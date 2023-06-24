@@ -2,7 +2,7 @@
 import { useEffect, useReducer } from 'react'
 import { TODO_FILTERS } from '../consts'
 import { completedTodo, deleteTodo, fetchTodos, updateTodos } from '../services/todos'
-import { type TodoList, type FilterValue } from '../types'
+import { type TodoList, type FilterValue, type Response } from '../types'
 
 const initialState = {
   sync: false,
@@ -200,8 +200,9 @@ export const useTodos = (): {
   const activeCount = todos.length - completedCount
 
   useEffect(() => {
-      const tds = fetchTodos()
-      tds.then(todos => {
+      const response = fetchTodos()
+      response.then((resp) => {
+        const todos = resp.data
         dispatch({ type: 'INIT_TODOS', payload: { todos } })
       }
       )

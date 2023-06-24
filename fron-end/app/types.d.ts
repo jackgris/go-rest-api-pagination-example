@@ -7,6 +7,13 @@ export interface Todo {
   completed: boolean
 }
 
+export interface Response {
+  success: boolean
+  message: string
+  data: TodoList
+  pages: number
+}
+
 export type TodoId = Pick<Todo, 'id'>
 export type TodoTitle = Pick<Todo, 'title'>
 

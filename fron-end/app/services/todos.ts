@@ -1,9 +1,9 @@
 'use client'
-import { type TodoList, type Todo } from '../types'
+import { type TodoList, type Todo, type Response } from '../types'
 
 const API_URL = 'http://localhost:3000/v1/todos/'
 
-export  const fetchTodos = async (): Promise<TodoList> => {
+export  const fetchTodos = async (): Promise<Response> => {
 
     const res = await fetch(API_URL)
     if(!res.ok){
