@@ -41,8 +41,8 @@ func TestCreateTodos(t *testing.T) {
 	params := []Params{
 		{url: "/v1/todos", code: fiber.StatusBadRequest, method: fiber.MethodPost, result: nil, amount: 0},
 		{url: "/v1/todos", code: fiber.StatusCreated, method: fiber.MethodPost,
-			send:   &v1.Todo{Name: "Testing", Description: "Some data"},
-			result: &v1.Todo{Name: "Testing", Description: "Some data"}},
+			send:   &v1.Todo{Title: "Testing", Description: "Some data"},
+			result: &v1.Todo{Title: "Testing", Description: "Some data"}},
 	}
 
 	for _, p := range params {
@@ -64,11 +64,11 @@ func TestUpdateTodo(t *testing.T) {
 
 	params := []Params{
 		{url: "/v1/todos", code: fiber.StatusOK, method: fiber.MethodPut,
-			send:   &v1.Todo{ID: id, Name: "New name", Description: "New description"},
-			result: &v1.Todo{ID: id, Name: "New name", Description: "New description"}},
+			send:   &v1.Todo{ID: id, Title: "New name", Description: "New description"},
+			result: &v1.Todo{ID: id, Title: "New name", Description: "New description"}},
 		{url: "/v1/todos", code: fiber.StatusInternalServerError, method: fiber.MethodPut,
-			send:   &v1.Todo{ID: fakeId, Name: "New name", Description: "New description"},
-			result: &v1.Todo{ID: fakeId, Name: "", Description: ""}},
+			send:   &v1.Todo{ID: fakeId, Title: "New name", Description: "New description"},
+			result: &v1.Todo{ID: fakeId, Title: "", Description: ""}},
 	}
 
 	for _, p := range params {
@@ -90,9 +90,9 @@ func TestGetByIdTodo(t *testing.T) {
 
 	params := []Params{
 		{url: "/v1/todos/" + id.String(), code: fiber.StatusOK, method: fiber.MethodGet, byID: true,
-			result: &v1.Todo{ID: id, Name: "Another 2aaa22", Description: "Chau"}},
+			result: &v1.Todo{ID: id, Title: "Another 2aaa22", Description: "Chau"}},
 		{url: "/v1/todos/" + fakeId.String(), code: fiber.StatusNotFound, method: fiber.MethodGet,
-			byID: true, result: &v1.Todo{ID: fakeId, Name: "", Description: ""}},
+			byID: true, result: &v1.Todo{ID: fakeId, Title: "", Description: ""}},
 	}
 
 	for _, p := range params {
@@ -195,8 +195,8 @@ func check(byteValue []byte, l *logger.Logger, p Params, t *testing.T) {
 		t.Fail()
 	}
 
-	if r.Data.Name != p.result.Name {
-		l.Printf("We receive name %s, but want %s\n", r.Data.Name, p.result.Name)
+	if r.Data.Title != p.result.Title {
+		l.Printf("We receive name %s, but want %s\n", r.Data.Title, p.result.Title)
 		t.Fail()
 	}
 

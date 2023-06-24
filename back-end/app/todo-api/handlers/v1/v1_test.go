@@ -59,10 +59,8 @@ func getData() ([]v1.Todo, error) {
 func todoJsonToTodo(td v1.Todo) todo.Todo {
 	return todo.Todo{
 		ID:          td.ID,
-		Name:        td.Name,
+		Title:       td.Title,
 		Description: td.Description,
-		DateCreated: td.DateCreated,
-		DateUpdated: td.DateUpdated,
 	}
 }
 
