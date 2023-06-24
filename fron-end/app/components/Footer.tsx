@@ -1,5 +1,6 @@
 import { type FilterValue } from '../types'
 import { Filters } from './Filters'
+import { Pagination } from './Pagination'
 
 interface Props {
   handleFilterChange: (filter: FilterValue) => void
@@ -20,6 +21,7 @@ export const Footer: React.FC<Props> = ({
   const activeTodoWord = singleActiveCount ? 'tarea' : 'tareas'
 
   return (
+    <div>
     <footer className="footer">
 
       <span className="todo-count">
@@ -38,5 +40,7 @@ export const Footer: React.FC<Props> = ({
         )
       }
     </footer>
+    <Pagination pages={10} />
+    </div>
   )
 }
