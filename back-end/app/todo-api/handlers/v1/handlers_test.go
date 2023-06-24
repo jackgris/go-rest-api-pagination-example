@@ -195,13 +195,15 @@ func check(byteValue []byte, l *logger.Logger, p Params, t *testing.T) {
 		t.Fail()
 	}
 
-	if r.Data.Title != p.result.Title {
-		l.Printf("We receive name %s, but want %s\n", r.Data.Title, p.result.Title)
-		t.Fail()
-	}
+	if len(r.Data) > 0 {
+		if r.Data[0].Title != p.result.Title {
+			l.Printf("We receive name %s, but want %s\n", r.Data[0].Title, p.result.Title)
+			t.Fail()
+		}
 
-	if r.Data.Description != p.result.Description {
-		l.Printf("We receive description %s, but want %s\n", r.Data.Description, p.result.Description)
-		t.Fail()
+		if r.Data[0].Description != p.result.Description {
+			l.Printf("We receive description %s, but want %s\n", r.Data[0].Description, p.result.Description)
+			t.Fail()
+		}
 	}
 }

@@ -19,7 +19,8 @@ type Todo struct {
 type Response struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
-	Data    Todo   `json:"data"`
+	Data    []Todo `json:"data"`
+	Pages   int    `json:"pages"`
 }
 
 func postToTodo(data []byte) (Todo, error) {

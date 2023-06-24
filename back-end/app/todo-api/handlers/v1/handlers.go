@@ -8,6 +8,8 @@ import (
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
 )
 
+var numTodos int = 10
+
 func GetTodos(cfg Config) fiber.Handler {
 
 	fn := func(c *fiber.Ctx) error {
@@ -18,7 +20,7 @@ func GetTodos(cfg Config) fiber.Handler {
 			pageNumber = 1
 		}
 		// We search all Todos related to the number page and with a maximum per page of 10 results
-		tds, err := cfg.Core.Query(c.Context(), "", "", pageNumber, 10)
+		tds, err := cfg.Core.Query(c.Context(), "", "", pageNumber, numTodos)
 		if err != nil {
 			c.Status(fiber.StatusInternalServerError)
 			return c.JSON(Response{
@@ -30,8 +32,27 @@ func GetTodos(cfg Config) fiber.Handler {
 		for _, t := range tds {
 			tdsJson = append(tdsJson, todoToTodoJson(t))
 		}
+
+		num, err := cfg.Core.Count(c.Context(), "")
+		if err != nil {
+			c.Status(fiber.StatusInternalServerError)
+			return c.JSON(Response{
+				Success: false,
+				Message: "Can't proccess number of Todos",
+			})
+		}
+		// Calculate the number of pages for our fron-end
+		pages := 1
+		if int(num) > numTodos {
+			pages = (int(num) / numTodos) + 1
+		}
 		c.Status(fiber.StatusOK)
-		return c.JSON(tdsJson)
+		return c.JSON(Response{
+			Success: false,
+			Data:    tdsJson,
+			Pages:   pages,
+		})
+
 	}
 
 	return fn
@@ -72,9 +93,11 @@ func CreateTodo(cfg Config) fiber.Handler {
 			})
 		}
 		c.Status(fiber.StatusCreated)
+		todos := []Todo{}
+		todos = append(todos, todoToTodoJson(dbTd))
 		return c.JSON(Response{
 			Success: true,
-			Data:    todoToTodoJson(dbTd),
+			Data:    todos,
 		})
 	}
 
@@ -120,9 +143,11 @@ func UpdateTodo(cfg Config) fiber.Handler {
 			})
 		}
 		c.Status(fiber.StatusOK)
+		todos := []Todo{}
+		todos = append(todos, todoToTodoJson(td))
 		return c.JSON(Response{
 			Success: true,
-			Data:    todoToTodoJson(td),
+			Data:    todos,
 		})
 	}
 
@@ -157,12 +182,13 @@ func GetTodoById(cfg Config) fiber.Handler {
 			})
 		}
 
-		tdJson := todoToTodoJson(td)
+		todos := []Todo{}
+		todos = append(todos, todoToTodoJson(td))
 		c.Status(fiber.StatusOK)
 		return c.JSON(Response{
 			Success: true,
 			Message: "",
-			Data:    tdJson,
+			Data:    todos,
 		})
 	}
 
