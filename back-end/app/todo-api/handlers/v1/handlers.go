@@ -93,7 +93,7 @@ func UpdateTodo(cfg Config) fiber.Handler {
 			})
 		}
 
-		if isNotValidTodo(tdJson) || tdJson.ID == uuid.Nil {
+		if tdJson.ID == uuid.Nil {
 			c.Status(fiber.StatusBadRequest)
 			return c.JSON(Response{
 				Success: false,

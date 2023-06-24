@@ -67,22 +67,27 @@ func (c *Core) Create(ctx context.Context, todo NewTodo) (Todo, error) {
 // Update modifies data about a Todo. It will error if the specified ID is
 // invalid or does not reference an existing Product.
 func (c *Core) Update(ctx context.Context, td Todo, up UpdateTodo) (Todo, error) {
+	todo, err := c.storer.QueryByID(ctx, td.ID)
+	if err != nil {
+		return Todo{}, err
+	}
+
 	if up.Title != nil {
-		td.Title = *up.Title
+		todo.Title = *up.Title
 	}
 	if up.Description != nil {
-		td.Description = *up.Description
+		todo.Description = *up.Description
 	}
 	if up.Completed != nil {
-		td.Completed = *up.Completed
+		todo.Completed = *up.Completed
 	}
-	td.DateUpdated = time.Now()
+	todo.DateUpdated = time.Now()
 
-	if err := c.storer.Update(ctx, td); err != nil {
+	if err := c.storer.Update(ctx, todo); err != nil {
 		return Todo{}, fmt.Errorf("update: %w", err)
 	}
 
-	return td, nil
+	return todo, nil
 }
 
 // Delete removes the todo identified by a given ID.
