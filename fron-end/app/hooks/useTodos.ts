@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useReducer } from 'react'
 import { TODO_FILTERS } from '../consts'
-import { fetchTodos, updateTodos } from '../services/todos'
-import { type TodoList, type FilterValue, type Todo as Td, RespTodo } from '../types'
+import { deleteTodo, fetchTodos, updateTodos } from '../services/todos'
+import { type TodoList, type FilterValue } from '../types'
 
 const initialState = {
   sync: false,
@@ -87,6 +87,7 @@ const reducer = (state: State, action: Action): State => {
 
   if (action.type === 'REMOVE') {
     const { id } = action.payload
+
     return {
       ...state,
       sync: true,
@@ -150,7 +151,12 @@ export const useTodos = (): {
   }
 
   const handleRemove = (id: string): void => {
-    dispatch({ type: 'REMOVE', payload: { id } })
+    const remove = deleteTodo(id)
+    remove.then((ok) => {
+      if (ok) {
+        dispatch({ type: 'REMOVE', payload: { id } })
+      }
+    })
   }
 
   const handleUpdateTitle = ({ id, title }: { id: string, title: string }): void => {
@@ -190,18 +196,7 @@ export const useTodos = (): {
 
   useEffect(() => {
       const tds = fetchTodos()
-      tds.then(resp => {
-        let todos : TodoList = []
-        // This transformation is only because I don't wanna change my API :D 
-        resp.forEach((t: RespTodo) => {
-          const td: Td = {
-          id: t.id,
-          description: t.description,
-          title: t.name,
-          completed: false
-          }
-          todos.push(td)
-        })
+      tds.then(todos => {
         dispatch({ type: 'INIT_TODOS', payload: { todos } })
       }
       )

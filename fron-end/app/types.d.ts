@@ -7,14 +7,6 @@ export interface Todo {
   completed: boolean
 }
 
-export interface RespTodo {
-  date_created: string
-  date_updated: string
-  description: string
-  id: string
-  name: string
-}
-
 export type TodoId = Pick<Todo, 'id'>
 export type TodoTitle = Pick<Todo, 'title'>
 
