@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useReducer } from 'react'
 import { TODO_FILTERS } from '../consts'
-import { deleteTodo, fetchTodos, updateTodos } from '../services/todos'
+import { completedTodo, deleteTodo, fetchTodos, updateTodos } from '../services/todos'
 import { type TodoList, type FilterValue } from '../types'
 
 const initialState = {
@@ -147,7 +147,12 @@ export const useTodos = (): {
   const [{ sync, todos, filterSelected }, dispatch] = useReducer(reducer, initialState)
 
   const handleCompleted = (id: string, completed: boolean): void => {
-    dispatch({ type: 'COMPLETED', payload: { id, completed } })
+      const complete = completedTodo(id, completed)
+      complete.then((ok) => {
+      if (ok) {
+        dispatch({ type: 'COMPLETED', payload: { id, completed } })
+      }
+    })
   }
 
   const handleRemove = (id: string): void => {

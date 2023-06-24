@@ -21,6 +21,21 @@ export const deleteTodo = async (id: string): Promise<boolean> => {
   return res.ok
 }
 
+export const completedTodo = async(id:string, completed: boolean): Promise<boolean> => {
+  const todo = {
+    id:id,
+    completed: completed
+  }
+  const res = await  fetch(API_URL, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(todo)
+  })
+  return res.ok
+}
+
 export const updateTodos = async ({ todos }: { todos: TodoList }): Promise<boolean> => {
   // This transformation and fake dates is only because I don't wanna change my API :D 
   todos.forEach((t) =>{
