@@ -60,7 +60,7 @@ export const Todo: React.FC<Props> = ({
           onChange={(e) => { setCompleted(id, e.target.checked) }}
         />
         <label>{title}</label>
-        <text>{description}</text>
+        <div>{description}</div>
         <button className='destroy' onClick={() => { removeTodo(id) }}></button>
       </div>
 

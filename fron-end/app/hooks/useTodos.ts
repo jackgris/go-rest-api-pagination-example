@@ -7,6 +7,8 @@ import { type TodoList, type FilterValue, type Response } from '../types'
 const initialState = {
   sync: false,
   todos: [],
+  page: 1,
+  pages: 1,
   filterSelected: (() => {
     // read from url query params using URLSearchParams
     // const searchParams = new URLSearchParams(window.location.search)
@@ -26,27 +28,41 @@ const initialState = {
 }
 
 type Action =
-  | { type: 'INIT_TODOS', payload: { todos: TodoList } }
+  | { type: 'INIT_TODOS', payload: { todos: TodoList, pages: number } }
   | { type: 'CLEAR_COMPLETED' }
   | { type: 'COMPLETED', payload: { id: string, completed: boolean } }
   | { type: 'FILTER_CHANGE', payload: { filter: FilterValue } }
   | { type: 'REMOVE', payload: { id: string } }
   | { type: 'SAVE', payload: { title: string, description:string } }
   | { type: 'UPDATE_TITLE', payload: { id: string, title: string } }
+  | { type: 'TODOS_PAGE', payload: { page: number, todos: TodoList } }
 
 interface State {
   sync: boolean
   todos: TodoList
   filterSelected: FilterValue
+  pages: number
+  page: number
 }
 
 const reducer = (state: State, action: Action): State => {
-  if (action.type === 'INIT_TODOS') {
-    const { todos } = action.payload
+  if (action.type === 'TODOS_PAGE') {
+    const { page, todos } = action.payload
     return {
       ...state,
       sync: false,
+      page,
       todos
+    }
+  }
+
+  if (action.type === 'INIT_TODOS') {
+    const { todos, pages } = action.payload
+    return {
+      ...state,
+      sync: false,
+      todos,
+      pages
     }
   }
 
@@ -136,15 +152,18 @@ export const useTodos = (): {
   activeCount: number
   completedCount: number
   todos: TodoList
+  page: number
+  pages: number
   filterSelected: FilterValue
   handleClearCompleted: () => void
   handleCompleted: (id: string, completed: boolean) => void
   handleFilterChange: (filter: FilterValue) => void
   handleRemove: (id: string) => void
+  handleTodosPages: (page: number) => void
   handleSave: (title: string, description: string) => void
   handleUpdateTitle: (params: { id: string, title: string }) => void
 } => {
-  const [{ sync, todos, filterSelected }, dispatch] = useReducer(reducer, initialState)
+  const [{ sync, todos, page, pages, filterSelected }, dispatch] = useReducer(reducer, initialState)
 
   const handleCompleted = (id: string, completed: boolean): void => {
       const complete = completedTodo(id, completed)
@@ -161,6 +180,14 @@ export const useTodos = (): {
       if (ok) {
         dispatch({ type: 'REMOVE', payload: { id } })
       }
+    })
+  }
+
+  const handleTodosPages = (page: number): void => {
+    const response = fetchTodos(page)
+      response.then((resp) => {
+        const todos = resp.data
+        dispatch({ type: 'TODOS_PAGE', payload: { page, todos } })
     })
   }
 
@@ -200,10 +227,11 @@ export const useTodos = (): {
   const activeCount = todos.length - completedCount
 
   useEffect(() => {
-      const response = fetchTodos()
+      const response = fetchTodos(1)
       response.then((resp) => {
         const todos = resp.data
-        dispatch({ type: 'INIT_TODOS', payload: { todos } })
+        const pages = resp.pages
+        dispatch({ type: 'INIT_TODOS', payload: { todos, pages } })
       }
       )
   }, [])
@@ -225,6 +253,9 @@ export const useTodos = (): {
     handleRemove,
     handleSave,
     handleUpdateTitle,
-    todos: filteredTodos
+    handleTodosPages,
+    todos: filteredTodos,
+    pages,
+    page
   }
 }

@@ -16,7 +16,9 @@ const App: React.FC = () => {
     handleRemove,
     handleSave,
     handleUpdateTitle,
-    todos: filteredTodos
+    handleTodosPages,
+    todos: filteredTodos,
+    pages
   } = useTodos()
 
   return (
@@ -30,6 +32,8 @@ const App: React.FC = () => {
           todos={filteredTodos}
         />
         <Footer
+          pages={pages}
+          handlerTodosPage={handleTodosPages}
           handleFilterChange={handleFilterChange}
           completedCount={completedCount}
           activeCount={activeCount}

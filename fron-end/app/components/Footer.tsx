@@ -4,17 +4,21 @@ import { Pagination } from './Pagination'
 
 interface Props {
   handleFilterChange: (filter: FilterValue) => void
+  handlerTodosPage: (page: number) => void
   activeCount: number
   completedCount: number
   onClearCompleted: () => void
   filterSelected: FilterValue
+  pages: number
 }
 
 export const Footer: React.FC<Props> = ({
   activeCount,
   completedCount,
+  handlerTodosPage,
   onClearCompleted,
   filterSelected,
+  pages,
   handleFilterChange
 }) => {
   const singleActiveCount = activeCount === 1
@@ -40,7 +44,9 @@ export const Footer: React.FC<Props> = ({
         )
       }
     </footer>
-    <Pagination pages={10} />
+    <Pagination
+      handleTodosPage={handlerTodosPage} 
+      pages={pages} />
     </div>
   )
 }

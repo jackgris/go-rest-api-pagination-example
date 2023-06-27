@@ -3,9 +3,9 @@ import { type TodoList, type Todo, type Response } from '../types'
 
 const API_URL = 'http://localhost:3000/v1/todos/'
 
-export  const fetchTodos = async (): Promise<Response> => {
+export  const fetchTodos = async (page: number): Promise<Response> => {
 
-    const res = await fetch(API_URL)
+    const res = await fetch(API_URL + '?page=' + page)
     if(!res.ok){
       const error = new Error('Cant fetch data')
       return Promise.reject(error)
