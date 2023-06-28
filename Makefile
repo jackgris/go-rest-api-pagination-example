@@ -8,12 +8,14 @@ NAMESPACE_DB		:= db-ns
 NAMESPACE_API		:= todos-ns
 APP             := todosapi
 VERSION         := 0.0.1
+NAME_DOCKER_HUB := jackgris
 BASE_IMAGE_NAME := pagination
 SERVICE_NAME    := todos-api
-SERVICE_IMAGE   := jackgris/$(BASE_IMAGE_NAME)-$(SERVICE_NAME):$(VERSION)
+SERVICE_IMAGE   := $(NAME_DOCKER_HUB)/$(BASE_IMAGE_NAME)-$(SERVICE_NAME):$(VERSION)
 DATABASE_NAME   := todos-mysql
-DATABASE_IMAGE  := jackgris/$(BASE_IMAGE_NAME)-$(DATABASE_NAME):$(VERSION)
-
+DATABASE_IMAGE  := $(NAME_DOCKER_HUB)/$(BASE_IMAGE_NAME)-$(DATABASE_NAME):$(VERSION)
+FRONT_END_NAME  := todos-front-end
+FRONT_END_IMAGE := $(NAME_DOCKER_HUB)/$(BASE_IMAGE_NAME)-$(FRONT_END_NAME):$(VERSION)
 
 # ==============================================================================
 # Running from within k8s/kind
@@ -34,7 +36,7 @@ dev-down:
 # ==============================================================================
 # Building containers
 
-all: database-mysql api-todo
+all: database-mysql api-todo front-end-app
 
 service:
 	cd back-end; \
@@ -49,6 +51,14 @@ database-mysql:
 	docker build \
 		-f database/Dockerfile \
 		-t $(DATABASE_IMAGE) \
+		--build-arg BUILD_REF=$(VERSION) \
+		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+	  .
+
+front-end-app:
+	docker build \
+		-f fron-end/Dockerfile \
+		-t $(FRONT_END_IMAGE) \
 		--build-arg BUILD_REF=$(VERSION) \
 		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
 	  .

@@ -1,11 +1,11 @@
 FROM node:lts as dependencies
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY fron-end/package.json fron-end/package-lock.json ./
 RUN npm install --omit=dev
 
 FROM node:lts as builder
 WORKDIR /app
-COPY . .
+COPY fron-end/ ./
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN npm run build
 
@@ -19,6 +19,6 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["npm", "start"]
