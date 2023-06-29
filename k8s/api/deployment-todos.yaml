@@ -20,8 +20,11 @@ spec:
     spec:
       containers:
       - image: jackgris/pagination-todos-api:0.0.1
-        name: todosapik8s
+        name: todosapi
         resources: {}
+        ports:
+          - containerPort: 3000
+            name: todosapi
         env:
           - name: CONFIG_DBPASS
             valueFrom:

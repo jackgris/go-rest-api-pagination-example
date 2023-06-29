@@ -2,7 +2,7 @@
 # Define dependencies
 
 KIND            := kindest/node:v1.27.3
-KIND_CLUSTER    := goscrapy-starter-cluster
+KIND_CLUSTER    := todos-starter-cluster
 NAMESPACE       := todos-system
 NAMESPACE_DB		:= db-ns
 NAMESPACE_API		:= todos-ns
@@ -38,7 +38,7 @@ dev-down:
 
 all: database-mysql api-todo front-end-app
 
-service:
+api-todo:
 	cd back-end; \
 	docker build \
 		-f ./Dockerfile \
@@ -88,10 +88,13 @@ dev-load-front:
 	kubectl create -f k8s/front/deployment-front-end.yaml
 	kubectl create -f k8s/front/service-front-end.yaml
 
-dev-load: dev-load-database dev-load-api
+dev-load: dev-load-database dev-load-api dev-load-front
 
-dev-port-forward:
+dev-port-forward-api:
 	kubectl port-forward -n todos-ns svc/todosapi 3000 --namespace=todos-ns
+
+dev-port-forward-front:
+	kubectl port-forward -n front-end-ns svc/todosfrontend 8080 --namespace=front-end-ns
 
 dev-status:
 	kubectl get nodes -o wide --namespace=$(NAMESPACE_DB)

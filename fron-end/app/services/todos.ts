@@ -3,13 +3,11 @@ import { type TodoList, type Todo, type Response } from '../types'
 
 let HOST = process.env.CONFIG_API_HOST
 if (HOST === undefined){
-    HOST = 'todosapi.todos-ns.svc.cluster.local:3000'
+    HOST = 'http://localhost:3000'
 }
 const API_URL =  HOST + '/v1/todos/'
 
 export  const fetchTodos = async (page: number): Promise<Response> => {
-
-    console.log('HOST ' + HOST)
 
     const res = await fetch(API_URL + '?page=' + page)
     if(!res.ok){
