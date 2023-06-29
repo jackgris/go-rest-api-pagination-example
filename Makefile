@@ -57,6 +57,8 @@ database-mysql:
 
 front-end-app:
 	docker build \
+		--build-arg CONFIG_API_HOST='todosapi.todos-ns.svc.cluster.local:3000' \
+    --build-arg CONFIG_SERVER_PORT='8080' \
 		-f fron-end/Dockerfile \
 		-t $(FRONT_END_IMAGE) \
 		--build-arg BUILD_REF=$(VERSION) \
@@ -79,6 +81,12 @@ dev-load-api:
 	kubectl create -f k8s/api/configmap-todos.yaml
 	kubectl create -f k8s/api/deployment-todos.yaml
 	kubectl create -f k8s/api/service-todos.yaml
+
+dev-load-front:
+	kubectl create -f k8s/front/front-end-ns.yaml
+	kubectl create -f k8s/front/configmap-front-end.yaml
+	kubectl create -f k8s/front/deployment-front-end.yaml
+	kubectl create -f k8s/front/service-front-end.yaml
 
 dev-load: dev-load-database dev-load-api
 

@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  serverport: "8080"
+  apihost: todosapi.todos-ns.svc.cluster.local:3000
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: front-end-cm
+  namespace: front-end-ns
