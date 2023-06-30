@@ -7,6 +7,11 @@ export interface Todo {
   completed: boolean
 }
 
+export interface SendTodo {
+  title: string
+  description: string
+}
+
 export interface Response {
   success: boolean
   message: string

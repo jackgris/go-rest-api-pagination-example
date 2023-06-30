@@ -1,5 +1,5 @@
 'use client'
-import { type TodoList, type Todo, type Response } from '../types'
+import { type TodoList, type Todo, type Response, type SendTodo } from '../types'
 
 let HOST = process.env.CONFIG_API_HOST
 if (HOST === undefined){
@@ -40,20 +40,31 @@ export const completedTodo = async(id:string, completed: boolean): Promise<boole
   return res.ok
 }
 
-export const updateTodos = async ({ todos }: { todos: TodoList }): Promise<boolean> => {
-  // This transformation and fake dates is only because I don't wanna change my API :D 
-  todos.forEach((t) =>{
-    const send = sendTodo(t)
-    send.then((resp) => (console.log(resp)))
-    if (!send) {
-      console.log('Error updated')
-      return false
-    }
-  }) 
-  return true
+export const updateTodo = async (todo: SendTodo): Promise<boolean> => {
+      const send = sendTodo(todo)
+      send.then((resp) => {
+        if(!resp){
+          console.log('Error updated')
+      }})
+      if (!send) {
+        console.log('Error updated')
+        return false
+      }
+      return true
 }
 
-const sendTodo = async(todo:Todo):Promise<boolean> => {
+export const createTodo = async(todo:SendTodo):Promise<boolean> => {
+  const res = await  fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(todo)
+  })
+  return res.ok
+}
+
+const sendTodo = async(todo:SendTodo):Promise<boolean> => {
   const res = await  fetch(API_URL, {
     method: 'PUT',
     headers: {

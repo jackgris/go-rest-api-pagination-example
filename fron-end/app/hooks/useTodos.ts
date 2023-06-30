@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useReducer } from 'react'
 import { TODO_FILTERS } from '../consts'
-import { completedTodo, deleteTodo, fetchTodos, updateTodos } from '../services/todos'
-import { type TodoList, type FilterValue, type Response } from '../types'
+import { completedTodo, deleteTodo, fetchTodos, updateTodo, createTodo } from '../services/todos'
+import { type TodoList, type FilterValue, type SendTodo } from '../types'
 
 const initialState = {
   sync: false,
@@ -192,11 +192,31 @@ export const useTodos = (): {
   }
 
   const handleUpdateTitle = ({ id, title }: { id: string, title: string }): void => {
-    dispatch({ type: 'UPDATE_TITLE', payload: { id, title } })
+    const todo = {
+      id:id,
+      title:title,
+      description:'',
+    }
+    const response = updateTodo(todo)
+      response.then((resp) => {
+        if (resp){
+          dispatch({ type: 'UPDATE_TITLE', payload: { id, title } })
+        }
+      })
   }
 
   const handleSave = (title: string, description: string): void => {
-    dispatch({ type: 'SAVE', payload: { title, description } })
+    const send:SendTodo = {
+      title: title,
+      description: description,
+    } 
+    console.log(send)
+    const response = createTodo(send)
+      response.then((resp) => {
+        if (resp) {
+          dispatch({ type: 'SAVE', payload: { title, description } })
+        } 
+    })   
   }
 
   const handleClearCompleted = (): void => {
@@ -235,13 +255,6 @@ export const useTodos = (): {
       }
       )
   }, [])
-
-
-  useEffect(() => {
-    if (sync) {
-      updateTodos({ todos }).catch(err => { console.error(err) })
-    }
-  }, [todos, sync])
 
   return {
     activeCount,
