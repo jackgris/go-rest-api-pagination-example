@@ -48,7 +48,7 @@ func GetTodos(cfg Config) fiber.Handler {
 		}
 		c.Status(fiber.StatusOK)
 		return c.JSON(Response{
-			Success: false,
+			Success: true,
 			Data:    tdsJson,
 			Pages:   pages,
 		})
