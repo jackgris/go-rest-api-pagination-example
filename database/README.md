@@ -15,6 +15,37 @@ Now we can create a container with name `mysql-nextjs` with our MySQL database, 
 docker run --name mysql-nextjs -e MYSQL_ROOT_PASSWORD=1234 -d mysql:8.0.33
 ```
 
+### Run with a volume
+
+If you want, can add a volume to your container.
+
+#### Create volume
+
+First we need to create the volume that you want to use if you didn't before. Using this command:
+
+```
+docker volume create pagination-volume
+```
+
+And you can see information with this command:
+
+```
+docker volume inspect pagination-volume
+```
+
+#### Run it
+
+Now you can use that volume, in this way:
+```
+docker run --name database-server-pagination -p 3306:3306 -v pagination-volume:/pagination-volume -e MYSQL_ROOT_PASSWORD=1234 -d jackgris/pagination-todos-mysql:0.0.1
+```
+
+Note: You can use another volume that you create before, for see all the volumes you can use this command:
+```
+docker volume ls
+```
+
+
 ## Access to our MySQL command line
 
 We can run this command to access the bash terminal of the container:
