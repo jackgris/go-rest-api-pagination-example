@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	v1 "github.com/jackgris/go-rest-api-pagination-example/app/todo-api/handlers/v1"
+	v2 "github.com/jackgris/go-rest-api-pagination-example/app/todo-api/handlers/v2"
 	"github.com/jackgris/go-rest-api-pagination-example/business/logger"
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo"
 	"github.com/jackgris/go-rest-api-pagination-example/business/todo/store/tododb"
@@ -79,11 +80,17 @@ func NewApp(core *todo.Core, logger *logger.Logger) *fiber.App {
 		Log:  logger,
 		Core: core,
 	}
+	cfg2 := v2.Config{
+		Log:  logger,
+		Core: core,
+	}
+
 	app := fiber.New()
 	// Initialize default config
 	app.Use(cors.New())
 
 	v1.Routes(app, cfg)
+	v2.Routes(app, cfg2)
 
 	return app
 }

@@ -8,8 +8,8 @@ func main() {
 	// Configure our logger
 	logger := logger.New()
 	// Create a new database connection
-	db := NewDb(logger)
+	core := NewDb(logger)
 	// Create our server and run
-	app := NewApp(db, logger)
+	app := NewApp(core, logger)
 	logger.Fatal(app.Listen(port))
 }
