@@ -1,7 +1,6 @@
 package v2
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -93,7 +92,6 @@ func CreateTodo(cfg Config) fiber.Handler {
 			Title:       td.Title,
 			Description: td.Description,
 		}
-		fmt.Println("NEW TODO: ", newTd)
 		dbTd, err := cfg.Core.Create(c.Context(), newTd)
 		if err != nil {
 			c.Status(fiber.StatusInternalServerError)
