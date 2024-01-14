@@ -99,6 +99,31 @@ FLUSH PRIVILEGES;
 
 Once that is done, your new user account has the same access to the database as the root user.
 
+### For example, the user can have remote access from anywhere, but they cannot drop any tables or databases.
+
+####  Connect to the MySQL container
+```bash
+docker exec -it mysql-container mysql -u root -p
+```
+####  Create a new user with read and write privileges
+
+```sql
+CREATE USER 'your_remote_user'@'%' IDENTIFIED BY 'your_remote_password';
+```
+
+#### Grant SELECT, INSERT, UPDATE, and DELETE privileges on a specific database
+
+```sql
+GRANT SELECT, INSERT, UPDATE, DELETE ON your_database.* TO 'your_remote_user'@'%';
+```
+
+In MySQL, the `%` symbol in the context of user host specifications represents a wildcard character for the hostname. When used in the context of user creation or privilege assignment, % allows the user to connect from any host.
+
+#### Flush privileges to apply changes
+```sql
+FLUSH PRIVILEGES;
+```
+
 ## Create database
 
 With this command will create the database:
